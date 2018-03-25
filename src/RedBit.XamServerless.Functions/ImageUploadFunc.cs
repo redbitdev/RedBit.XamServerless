@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -15,20 +16,30 @@ namespace RedBit.XamServerless.Functions
         {
             log.Info("C# HTTP trigger function processed a request.");
 
-            // parse query parameter
-            string name = req.GetQueryNameValuePairs()
-                .FirstOrDefault(q => string.Compare(q.Key, "name", true) == 0)
-                .Value;
-
             // Get request body
             dynamic data = await req.Content.ReadAsAsync<object>();
 
-            // Set name to query string or body data
-            name = name ?? data?.name;
+            if (data == null)
+                return req.CreateErrorResponse(HttpStatusCode.BadRequest, "No body found");
 
-            return name == null
-                ? req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or in the request body")
-                : req.CreateResponse(HttpStatusCode.OK, "Hello " + name);
+            if (data.imageb64 == null)
+                return req.CreateErrorResponse(HttpStatusCode.BadRequest, "No 'imageb64' property found in body");
+
+            // get the base64 image
+            var img = data?.imageb64;
+
+            // convert to byte array
+            var buffer = new byte[0];
+            try
+            {
+                buffer = Convert.FromBase64String(img.ToString());
+            }
+            catch
+            {
+                return req.CreateErrorResponse(HttpStatusCode.BadRequest, "unable to read 'imageb64' data");
+            }
+
+            return req.CreateResponse(HttpStatusCode.OK);
         }
     }
 }
