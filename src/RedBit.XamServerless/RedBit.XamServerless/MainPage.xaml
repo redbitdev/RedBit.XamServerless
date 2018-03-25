@@ -2,8 +2,32 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:RedBit.XamServerless"
-             x:Class="RedBit.XamServerless.MainPage">
+             x:Class="RedBit.XamServerless.MainPage"
+             Title="{Binding Title}">
 
-    <Button Text="Click to take pic" x:Name="btn" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--Just a label to show the status-->
+        <Label Text="{Binding Status}" />
+
+        <!--The image to show-->
+        <Image Grid.Row="1">
+            <Image.Source>
+                <FileImageSource File="{Binding PhotoPath}" />
+            </Image.Source>
+        </Image>
+
+        <!--Button to capture a picture-->
+        <Button 
+            Grid.Row="2" 
+            Text="Capture Image &amp; Upload"
+            Command="{Binding SnapPictureCommand}"
+            IsEnabled="{Binding PictureButtonEnabled}" />
+    </Grid>
 
 </ContentPage>

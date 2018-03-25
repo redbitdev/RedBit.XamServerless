@@ -13,29 +13,11 @@ namespace RedBit.XamServerless
 		public MainPage()
 		{
 			InitializeComponent();
-            btn.Clicked += Btn_Clicked;
-		}
-
-        private async void Btn_Clicked(object sender, EventArgs e)
-        {
-            await CrossMedia.Current.Initialize();
-
-            if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.IsTakePhotoSupported)
-            {
-                await DisplayAlert("No Camera", ":( No camera available.", "OK");
-                return;
-            }
-
-            var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
-            {
-                Directory = "Sample",
-                Name = "test.jpg",
-                PhotoSize = Plugin.Media.Abstractions.PhotoSize.Large,
-                CompressionQuality = 75,
-                AllowCropping = true
+            this.BindingContext = new MainPageViewModel();
+            MessagingCenter.Subscribe<Mobile.Core.ViewModelBase, string[]>(this, "DisplayAlert", (sender, values) => {
+                DisplayAlert(values[0], values[1], "Ok");
             });
 
-            await DisplayAlert("Made it!", "If you see this pic was taken", "OK");
         }
     }
 }

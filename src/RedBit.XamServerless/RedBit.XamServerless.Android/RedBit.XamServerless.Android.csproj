@@ -84,9 +84,9 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RedBit.XamServerless\RedBit.XamServerless.csproj">
+    <ProjectReference Include="..\RedBit.XamServerless\RedBit.XamServerless.Mobile.UI.csproj">
       <Project>{44004C01-C7F0-4BF4-A7A2-583D61ACFC34}</Project>
-      <Name>RedBit.XamServerless</Name>
+      <Name>RedBit.XamServerless.Mobile.UI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
