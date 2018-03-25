@@ -39,7 +39,16 @@ namespace RedBit.XamServerless.Functions
                 return req.CreateErrorResponse(HttpStatusCode.BadRequest, "unable to read 'imageb64' data");
             }
 
-            return req.CreateResponse(HttpStatusCode.OK);
+            // Upload to blob storage
+            if (buffer.Length == 0)
+            {
+                return req.CreateErrorResponse(HttpStatusCode.BadRequest, "unable to upload buffer with length of 0");
+            }
+            else
+            {
+                var url = await Core.BlobManager.Default.AddOriginalImage(buffer);
+                return req.CreateResponse(HttpStatusCode.OK, new { url });
+            }
         }
     }
 }
