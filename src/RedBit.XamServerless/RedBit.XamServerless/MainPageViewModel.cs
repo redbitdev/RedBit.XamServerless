@@ -91,6 +91,12 @@ namespace RedBit.XamServerless
 
                             this.PhotoPath = file.Path;
                             file.Dispose();
+
+                            // upload to blob
+                            Status = "Uploading to server ...";
+                            var url = await RedBit.XamServerless.Core.BlobManager.Default.AddOriginalImage(buffer);
+                            DisplayAlert("Upload Done!", $"Download using {url}");
+
                         }
 
                         Status = "See your pic!";
