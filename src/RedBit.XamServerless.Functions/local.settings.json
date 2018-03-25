@@ -1,0 +1,7 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=xamamarinserverlessdemo;AccountKey=cgoO8JXM8N5bKHqRV/dqvoN6BOAo3JoQ51M90QGZG7cnmwgq03o0loOmp+7Vskl/s+djhSkMuiW4VkXUEMUsVg==;BlobEndpoint=https://xamamarinserverlessdemo.blob.core.windows.net/;TableEndpoint=https://xamamarinserverlessdemo.table.core.windows.net/;QueueEndpoint=https://xamamarinserverlessdemo.queue.core.windows.net/;FileEndpoint=https://xamamarinserverlessdemo.file.core.windows.net/",
+        "AzureWebJobsDashboard": "DefaultEndpointsProtocol=https;AccountName=xamamarinserverlessdemo;AccountKey=cgoO8JXM8N5bKHqRV/dqvoN6BOAo3JoQ51M90QGZG7cnmwgq03o0loOmp+7Vskl/s+djhSkMuiW4VkXUEMUsVg==;BlobEndpoint=https://xamamarinserverlessdemo.blob.core.windows.net/;TableEndpoint=https://xamamarinserverlessdemo.table.core.windows.net/;QueueEndpoint=https://xamamarinserverlessdemo.queue.core.windows.net/;FileEndpoint=https://xamamarinserverlessdemo.file.core.windows.net/"
+    }
+}
