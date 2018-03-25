@@ -13,8 +13,8 @@ namespace RedBit.XamServerless
 		{
 			InitializeComponent();
 
-			MainPage = new RedBit.XamServerless.MainPage();
-		}
+            MainPage = new NavigationPage(new RedBit.XamServerless.MainPage());
+        }
 
 		protected override void OnStart ()
 		{
