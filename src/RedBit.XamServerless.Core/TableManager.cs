@@ -1,5 +1,6 @@
 ﻿using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 // TODO : this is hardcoded to work for demo, might want to refactor if you want to make generic or something else
@@ -55,6 +56,9 @@ namespace RedBit.XamServerless.Core
             var record = new ImageEntity { OriginalImageUrl = url };
             var result = await CloudTable.ExecuteAsync(TableOperation.Insert(record));
 
+            // add to queue for processing of image
+            await AddToQueue(record);
+
             // return the row key
             return record.RowKey;
         }
@@ -65,7 +69,19 @@ namespace RedBit.XamServerless.Core
             await Initialzie();
             var result = await CloudTable.ExecuteAsync(TableOperation.Merge(imageEntity));
         }
-
+        
+        /// <summary>
+        /// Adds the image entity to the queue
+        /// </summary>
+        /// <param name="record">entity to add</param>
+        private async Task AddToQueue(ImageEntity record)
+        {
+            // TODO: should probably be optimized
+            var qc = StorageAccount.CreateCloudQueueClient();
+            var queue = qc.GetQueueReference("imageprocessingqueue");
+            await queue.CreateIfNotExistsAsync();
+            await queue.AddMessageAsync(new Microsoft.WindowsAzure.Storage.Queue.CloudQueueMessage(JsonConvert.SerializeObject(record)));
+        }
     }
 
 }

@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedBit.XamServerless.Mobile
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedBit.XamServerless.Core", "RedBit.XamServerless.Core\RedBit.XamServerless.Core.csproj", "{80CBD71B-975C-4FB7-A635-5CD295D20C4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedBit.XamServerless.Functions", "RedBit.XamServerless.Functions\RedBit.XamServerless.Functions.csproj", "{46073A8A-2D95-4F71-8857-817EEE4165AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedBit.XamServerless.Functions", "RedBit.XamServerless.Functions\RedBit.XamServerless.Functions.csproj", "{46073A8A-2D95-4F71-8857-817EEE4165AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
