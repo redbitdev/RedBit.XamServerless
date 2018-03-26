@@ -1,8 +1,12 @@
-﻿using Plugin.Media;
+﻿using Newtonsoft.Json;
+using Plugin.Media;
 using RedBit.Mobile.Core;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace RedBit.XamServerless
@@ -94,7 +98,7 @@ namespace RedBit.XamServerless
 
                             // upload to blob
                             Status = "Uploading to server ...";
-                            var url = await RedBit.XamServerless.Core.BlobManager.Default.AddOriginalImage(buffer);
+                            var url = await UploadImage(b64);
                             DisplayAlert("Upload Done!", $"Download using {url}");
 
                         }
@@ -105,7 +109,39 @@ namespace RedBit.XamServerless
             }
         }
 
-        
+
+        private const string BASE_URL = "https://410ae54b.ngrok.io/api";
+        private async Task<string> UploadImage(string base64Image)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                // get the URL
+                var url = $"{BASE_URL}/ImageUploadFunc";
+
+                // create the object to upload
+                var imageObject = new Core.UploadPayload { Imageb64 = base64Image };
+
+                // create the request
+                using (var msg = new HttpRequestMessage(HttpMethod.Post, url))
+                {
+                    msg.Headers.Add("Accept", "application/json");
+
+                    // set the body for the POST
+                    msg.Content = new StringContent(JsonConvert.SerializeObject(imageObject), Encoding.UTF8, "application/json");
+                    msg.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                    // send the response
+                    using (var response = await client.SendAsync(msg, HttpCompletionOption.ResponseContentRead))
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+
+                        // parse out the response
+                        var uploadResponse = JsonConvert.DeserializeObject<Core.UploadResponse>(responseContent);
+                        return uploadResponse.Url;
+                    }
+                }
+            }
+        }
 
     }
 }

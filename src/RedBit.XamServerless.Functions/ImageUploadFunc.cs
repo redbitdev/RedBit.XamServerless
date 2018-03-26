@@ -1,3 +1,4 @@
+
 using System;
 using System.Linq;
 using System.Net;
@@ -17,16 +18,19 @@ namespace RedBit.XamServerless.Functions
             log.Info("C# HTTP trigger function processed a request.");
 
             // Get request body
-            dynamic data = await req.Content.ReadAsAsync<object>();
+            var body = await req.Content.ReadAsStringAsync();
 
-            if (data == null)
+            if (body == null)
                 return req.CreateErrorResponse(HttpStatusCode.BadRequest, "No body found");
 
-            if (data.imageb64 == null)
+            // deserialize the payload
+            var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Core.UploadPayload>(body);
+
+            if (data.Imageb64 == null)
                 return req.CreateErrorResponse(HttpStatusCode.BadRequest, "No 'imageb64' property found in body");
 
             // get the base64 image
-            var img = data?.imageb64;
+            var img = data.Imageb64;
 
             // convert to byte array
             var buffer = new byte[0];
@@ -47,7 +51,7 @@ namespace RedBit.XamServerless.Functions
             else
             {
                 var url = await Core.BlobManager.Default.AddOriginalImage(buffer);
-                return req.CreateResponse(HttpStatusCode.OK, new { url });
+                return req.CreateResponse(HttpStatusCode.OK, new Core.UploadResponse { Url = url });
             }
         }
     }
