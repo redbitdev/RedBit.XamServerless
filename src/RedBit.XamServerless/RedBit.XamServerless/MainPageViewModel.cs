@@ -98,8 +98,10 @@ namespace RedBit.XamServerless
 
                             // upload to blob
                             Status = "Uploading to server ...";
-                            var url = await UploadImage(b64);
-                            DisplayAlert("Upload Done!", $"Download using {url}");
+                            var id = await UploadImage(b64);
+                            Status = "Uploading complete, waiting for images to process ...";
+                            var result = await WaitTillProcessingComplete(id);
+                            DisplayAlert("Processing Done!", $"Download using {JsonConvert.SerializeObject(result.Images)}");
 
                         }
 
@@ -137,11 +139,37 @@ namespace RedBit.XamServerless
 
                         // parse out the response
                         var uploadResponse = JsonConvert.DeserializeObject<Core.UploadResponse>(responseContent);
-                        return uploadResponse.Url;
+                        return uploadResponse.Id;
                     }
                 }
             }
         }
 
+
+        private async Task<Core.UploadResponse> WaitTillProcessingComplete(string id)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                // get the URL
+                var url = $"{BASE_URL}/ImageProcessingStatusFunction?id={id}";
+
+                // create the request
+                using (var msg = new HttpRequestMessage(HttpMethod.Get, url))
+                {
+                    // send the response
+                    using (var response = await client.SendAsync(msg, HttpCompletionOption.ResponseContentRead))
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+
+                        // parse out the response
+                        var uploadResponse = JsonConvert.DeserializeObject<Core.UploadResponse>(responseContent);
+                        if (uploadResponse.Images == null)
+                            return await WaitTillProcessingComplete(id);
+                        else
+                            return uploadResponse;
+                    }
+                }
+            }
+        }
     }
 }
