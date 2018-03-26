@@ -51,8 +51,10 @@ namespace RedBit.XamServerless.Functions
             else
             {
                 var url = await Core.BlobManager.Default.AddOriginalImage(buffer);
-                return req.CreateResponse(HttpStatusCode.OK, new Core.UploadResponse { Url = url });
+                var id = await Core.TableManager.Default.AddOriginalImage(url);
+                return req.CreateResponse(HttpStatusCode.OK, new Core.UploadResponse { Url = url, Id = id });
             }
         }
+
     }
 }
