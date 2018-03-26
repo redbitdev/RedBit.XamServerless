@@ -82,6 +82,51 @@ namespace RedBit.XamServerless.Core
             await queue.CreateIfNotExistsAsync();
             await queue.AddMessageAsync(new Microsoft.WindowsAzure.Storage.Queue.CloudQueueMessage(JsonConvert.SerializeObject(record)));
         }
+
+        /// <summary>
+        /// Gets the status of a row
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<UploadResponse> GetStatus(string id)
+        {
+            // initialize
+            await Initialzie();
+
+            var result = await CloudTable.ExecuteAsync(TableOperation.Retrieve<ImageEntity>(ImageEntity.PARTITION_KEY, id));
+            if (result.HttpStatusCode == (int)System.Net.HttpStatusCode.OK)
+            {
+                var entity = result.Result as ImageEntity;
+                if (entity == null)
+                    return null;
+
+                if (string.IsNullOrEmpty(entity.MediumImageUrl) || string.IsNullOrEmpty(entity.ExtraSmallImageUrl) || string.IsNullOrEmpty(entity.SmallImageUrl))
+                {
+                    return new UploadResponse
+                    {
+                        Id = entity.RowKey,
+                        Url = entity.OriginalImageUrl,
+                    };
+                }
+                else
+                {
+                    return new UploadResponse
+                    {
+                        Id = entity.RowKey,
+                        Url = entity.OriginalImageUrl,
+                        Images = new Images
+                        {
+                            MediumImageUrl = entity.MediumImageUrl,
+                            ExtraSmallImageUrl = entity.ExtraSmallImageUrl,
+                            SmallImageUrl = entity.SmallImageUrl,
+                            OriginalImageUrl = entity.OriginalImageUrl
+                        }
+                    };
+                }
+            }
+            else
+                return null;
+        }
     }
 
 }
